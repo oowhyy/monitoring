@@ -1,0 +1,29 @@
+# Данные и логи
+data/
+logs/
+*.log
+
+# Environment файлы с секретами
+.env
+
+# Docker volumes
+.volumes/
+
+# MacOS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Временные файлы
+*.tmp
+*.temp
+positions.yaml
+
+# Бинарники
+go-demo/app
+go-demo/*.exe

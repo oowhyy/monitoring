@@ -1,0 +1,112 @@
+# Конфигурация Promtail
+# Документация: https://grafana.com/docs/loki/latest/clients/promtail/configuration/
+
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+  log_level: info
+
+# Позиции файлов для отслеживания прогресса чтения
+positions:
+  filename: /tmp/positions.yaml
+
+# Клиент для отправки логов в Loki
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+    # Батчинг для оптимизации отправки
+    batchwait: 1s
+    batchsize: 1048576 # 1MB
+
+    # Настройки повторных попыток
+    backoff_config:
+      min_period: 500ms
+      max_period: 5m
+      max_retries: 10
+
+    # Таймауты
+    timeout: 10s
+
+# Конфигурация сбора логов
+scrape_configs:
+  # Сбор JSON логов от Go приложения (zap logger)
+  - job_name: go-app-json
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: go-application
+          environment: local
+          __path__: /var/log/app/*.log
+
+    # Pipeline для обработки логов
+    pipeline_stages:
+      # Парсинг JSON
+      - json:
+          expressions:
+            level: level
+            timestamp: ts
+            logger: logger
+            caller: caller
+            message: msg
+            error: error
+            stacktrace: stacktrace
+
+      # Извлечение дополнительных полей (если есть)
+      - json:
+          expressions:
+            trace_id: trace_id
+            user_id: user_id
+            request_id: request_id
+          source: message
+
+      # Установка меток на основе содержимого
+      - labels:
+          level:
+          logger:
+
+      # Установка временной метки из лога
+      - timestamp:
+          source: timestamp
+          format: RFC3339Nano
+
+      # Форматирование вывода
+      - output:
+          source: message
+
+  # Дополнительный job для plain text логов (если нужны)
+  - job_name: go-app-text
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: go-application-text
+          environment: local
+          __path__: /var/log/app/*.txt
+
+    pipeline_stages:
+      # Regex для парсинга текстовых логов
+      - regex:
+          expression: '^(?P<timestamp>\S+)\s+(?P<level>\S+)\s+(?P<message>.*)$'
+
+      - labels:
+          level:
+
+      - timestamp:
+          source: timestamp
+          format: RFC3339
+
+      - output:
+          source: message
+
+  # Job для сбора логов из стандартных путей (можно раскомментировать при необходимости)
+  # - job_name: system
+  #   static_configs:
+  #     - targets:
+  #         - localhost
+  #       labels:
+  #         job: varlogs
+  #         __path__: /var/log/*.log
+
+# Настройки target для отслеживания
+target_config:
+  sync_period: 10s

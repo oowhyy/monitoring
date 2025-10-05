@@ -1,0 +1,16 @@
+# Автоматическая настройка дашбордов
+# Документация: https://grafana.com/docs/grafana/latest/administration/provisioning/#dashboards
+
+apiVersion: 1
+
+providers:
+  - name: "Loki Logs"
+    orgId: 1
+    folder: "Logs"
+    type: file
+    disableDeletion: false
+    editable: true
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path: /etc/grafana/provisioning/dashboards/definitions
