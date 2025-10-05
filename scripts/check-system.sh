@@ -100,9 +100,9 @@ check_file() {
     fi
 }
 
-check_file "config/loki-config.yml"
-check_file "config/promtail-config.yml"
-check_file "config/grafana/provisioning/datasources/loki.yml"
+check_file "config/loki.yml"
+check_file "config/promtail.yml"
+check_file "config/grafana/provisioning/datasources/loki-source.yml"
 check_file "config/grafana/provisioning/dashboards/dashboard.yml"
 
 # Проверка директорий для данных

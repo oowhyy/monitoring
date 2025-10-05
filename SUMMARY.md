@@ -11,12 +11,12 @@
 ```
 monitoring/
 ├── config/                              # Конфигурационные файлы
-│   ├── loki-config.yml                 # Конфигурация Loki
-│   ├── promtail-config.yml             # Конфигурация Promtail
+│   ├── loki.yml                        # Конфигурация Loki
+│   ├── promtail.yml                    # Конфигурация Promtail
 │   └── grafana/
 │       └── provisioning/
 │           ├── datasources/
-│           │   └── loki.yml           # Автонастройка источника данных
+│           │   └── loki-source.yml    # Автонастройка источника данных
 │           └── dashboards/
 │               ├── dashboard.yml       # Провайдер дашбордов
 │               └── definitions/
@@ -212,7 +212,7 @@ GRAFANA_ADMIN_USER=admin
 GRAFANA_ADMIN_PASSWORD=admin  # Измените в продакшене!
 ```
 
-### Настройка retention (loki-config.yml)
+### Настройка retention (loki.yml)
 
 ```yaml
 # Хранить логи 30 дней (по умолчанию)
@@ -232,7 +232,7 @@ promtail:
     - /var/log/nginx:/var/log/nginx:ro  # Добавить новый источник
 ```
 
-**2. В promtail-config.yml:**
+**2. В promtail.yml:**
 ```yaml
 scrape_configs:
   - job_name: nginx

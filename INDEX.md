@@ -114,8 +114,8 @@ monitoring/
 ├── 🚫 .gitignore                  ← Git ignore
 │
 ├── 📁 config/                     ← Конфигурационные файлы
-│   ├── loki-config.yml           ← Конфигурация Loki
-│   ├── promtail-config.yml       ← Конфигурация Promtail
+│   ├── loki.yml                  ← Конфигурация Loki
+│   ├── promtail.yml              ← Конфигурация Promtail
 │   └── grafana/
 │       └── provisioning/
 │           ├── datasources/      ← Автонастройка Loki

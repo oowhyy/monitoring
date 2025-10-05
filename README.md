@@ -187,12 +187,12 @@ cd ~/monitoring
 # ├── .gitignore
 # ├── README.md
 # └── config/
-#     ├── loki-config.yml
-#     ├── promtail-config.yml
+#     ├── loki.yml
+#     ├── promtail.yml
 #     └── grafana/
 #         └── provisioning/
 #             ├── datasources/
-#             │   └── loki.yml
+#             │   └── loki-source.yml
 #             └── dashboards/
 #                 ├── dashboard.yml
 #                 └── definitions/
@@ -301,13 +301,13 @@ chmod 755 /var/log/myapp
 ```yaml
   promtail:
     volumes:
-      - ./config/promtail-config.yml:/etc/promtail/config.yml
-      - ${LOG_SOURCE_PATH:-./logs}:/var/log/app:ro
+      - ./config/promtail.yml:/etc/promtail/config.yml
+      - $LOG_SOURCE_PATH:/var/log/app:ro
       - /var/log/nginx:/var/log/nginx:ro           # Nginx логи
       - /var/log/myapp:/var/log/myapp:ro           # Другое приложение
 ```
 
-И обновите `config/promtail-config.yml`, добавив новые job'ы.
+И обновите `config/promtail.yml`, добавив новые job'ы.
 
 ### Настройка портов
 
@@ -328,7 +328,7 @@ docker-compose up -d
 
 ### Настройка retention (хранение логов)
 
-По умолчанию логи хранятся 30 дней. Для изменения отредактируйте `config/loki-config.yml`:
+По умолчанию логи хранятся 30 дней. Для изменения отредактируйте `config/loki.yml`:
 
 ```yaml
 # Хранить логи 7 дней
@@ -759,7 +759,7 @@ docker-compose exec promtail cat /etc/promtail/config.yml
 
 2. Проверьте путь к логам:
 ```yaml
-# В promtail-config.yml должен быть правильный __path__
+# В promtail.yml должен быть правильный __path__
 __path__: /var/log/app/*.log  # Соответствует volume в docker-compose
 ```
 
@@ -844,7 +844,7 @@ du -sh data/loki
 
 2. Настройте retention (см. раздел Конфигурация):
 ```yaml
-# В loki-config.yml уменьшите retention
+# В loki.yml уменьшите retention
 retention_period: 168h  # 7 дней вместо 30
 ```
 
@@ -886,7 +886,7 @@ docker-compose up -d
 sum(count_over_time({job="go-application"}[5m]))
 ```
 
-4. Настройте кэширование в loki-config.yml (уже включено по умолчанию).
+4. Настройте кэширование в loki.yml (уже включено по умолчанию).
 
 ---
 
@@ -930,7 +930,7 @@ docker-compose up -d grafana
 
 3. **"maximum of series reached"**
 ```yaml
-# В loki-config.yml увеличьте лимит
+# В loki.yml увеличьте лимит
 limits_config:
   max_query_series: 5000  # Было 1000
 ```
@@ -997,7 +997,7 @@ const logger = winston.createLogger({
 
 ### Как мониторить несколько приложений?
 
-Добавьте разные job'ы в `promtail-config.yml`:
+Добавьте разные job'ы в `promtail.yml`:
 
 ```yaml
 scrape_configs:

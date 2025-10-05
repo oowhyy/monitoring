@@ -8,7 +8,7 @@ services:
     ports:
       - "$LOKI_PORT:3100"
     volumes:
-      - ./config/loki-config.yml:/etc/loki/local-config.yaml
+      - ./config/loki.yml:/etc/loki/local-config.yaml
       - $LOKI_DATA_PATH:/loki
     command: -config.file=/etc/loki/local-config.yaml
     networks:
@@ -20,7 +20,7 @@ services:
     image: grafana/promtail:2.9.3
     container_name: promtail
     volumes:
-      - ./config/promtail-config.yml:/etc/promtail/config.yml
+      - ./config/promtail.yml:/etc/promtail/config.yml
       - $LOG_SOURCE_PATH:/var/log/app:ro
       # Для сбора логов из разных источников можно добавить дополнительные volumes
       # - /path/to/another/logs:/var/log/another:ro
