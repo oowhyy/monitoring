@@ -3,6 +3,8 @@ version: "3.8"
 services:
   # Loki - хранилище для логов
   loki:
+    env_file: ".env"
+    user: "1000:1000"
     image: grafana/loki:2.9.3
     container_name: loki
     ports:
@@ -13,10 +15,11 @@ services:
     command: -config.file=/etc/loki/local-config.yaml
     networks:
       - monitoring
-    restart: unless-stopped
+    restart: no
 
   # Promtail - агент для сбора логов
   promtail:
+    env_file: ".env"
     image: grafana/promtail:2.9.3
     container_name: promtail
     volumes:
@@ -27,12 +30,13 @@ services:
     command: -config.file=/etc/promtail/config.yml
     networks:
       - monitoring
-    restart: unless-stopped
+    restart: no
     depends_on:
       - loki
 
   # Grafana - визуализация и дашборды
   grafana:
+    env_file: ".env"
     image: grafana/grafana:10.2.3
     container_name: grafana
     ports:
@@ -49,7 +53,7 @@ services:
       - ./config/grafana/provisioning:/etc/grafana/provisioning
     networks:
       - monitoring
-    restart: unless-stopped
+    restart: no
     depends_on:
       - loki
 

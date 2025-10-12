@@ -12,14 +12,7 @@ help: ## Показать это сообщение помощи
 setup: ## Первоначальная настройка
 	@echo "$(GREEN)Проверка конфигурации...$(NC)"
 	@if [ ! -f .env ]; then \
-		echo "$(YELLOW)Создание .env файла...$(NC)"; \
-		echo "GRAFANA_PORT=3000" > .env; \
-		echo "LOKI_PORT=3100" >> .env; \
-		echo "LOKI_DATA_PATH=/var/lib/docker/volumes/loki-data/_data" >> .env; \
-		echo "GRAFANA_DATA_PATH=/var/lib/docker/volumes/grafana-data/_data" >> .env; \
-		echo "LOG_SOURCE_PATH=./logs" >> .env; \
-		echo "GRAFANA_ADMIN_USER=admin" >> .env; \
-		echo "GRAFANA_ADMIN_PASSWORD=admin" >> .env; \
+		cp .env.example .env; \
 	fi
 	@echo "$(GREEN)Настройка завершена!$(NC)"
 	@echo "$(YELLOW)Теперь выполните: make start$(NC)"
