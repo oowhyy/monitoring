@@ -40,36 +40,26 @@ scrape_configs:
 
     # Pipeline для обработки логов
     pipeline_stages:
-      # Парсинг JSON
       - json:
+          # Это просто маппинг, сам по себе ничего не делает
           expressions:
             level: level
             timestamp: ts
             logger: logger
-            caller: caller
-            message: msg
-            error: error
-            stacktrace: stacktrace
-
-      # Извлечение дополнительных полей (если есть)
-      - json:
-          expressions:
-            trace_id: trace_id
-            user_id: user_id
             request_id: request_id
-          source: message
 
-      # Установка меток на основе содержимого
+      # Вручную добавить метки для быстрого поиска
       - labels:
           level:
           logger:
+          request_id:
 
-      # Установка временной метки из лога
+      # Откуда брать время
       - timestamp:
           source: timestamp
           format: RFC3339Nano
 
-      # Форматирование вывода
+      # Какое поле писать в основной message
       - output:
           source: message
 
