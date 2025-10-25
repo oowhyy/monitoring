@@ -3,6 +3,9 @@ data/
 logs/
 *.log
 
+# Личный конфиг
+config-personal
+
 # Environment файлы с секретами
 .env
 

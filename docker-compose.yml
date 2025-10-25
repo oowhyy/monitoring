@@ -1,5 +1,4 @@
 version: "3.8"
-
 services:
   # Loki - хранилище для логов
   loki:
@@ -10,7 +9,7 @@ services:
     ports:
       - "$LOKI_PORT:3100"
     volumes:
-      - ./config/loki.yml:/etc/loki/local-config.yaml
+      - $CONFIG_DIR/loki.yml:/etc/loki/local-config.yaml
       - $LOKI_DATA_PATH:/loki
     command: -config.file=/etc/loki/local-config.yaml
     networks:
@@ -23,7 +22,7 @@ services:
     image: grafana/promtail:2.9.3
     container_name: promtail
     volumes:
-      - ./config/promtail.yml:/etc/promtail/config.yml
+      - $CONFIG_DIR/promtail.yml:/etc/promtail/config.yml
       - $LOG_SOURCE_PATH:/var/log/app:ro
       # Для сбора логов из разных источников можно добавить дополнительные volumes
       # - /path/to/another/logs:/var/log/another:ro
@@ -50,7 +49,7 @@ services:
       - GF_INSTALL_PLUGINS=
     volumes:
       - $GRAFANA_DATA_PATH:/var/lib/grafana
-      - ./config/grafana/provisioning:/etc/grafana/provisioning
+      - $CONFIG_DIR/grafana/provisioning:/etc/grafana/provisioning
     networks:
       - monitoring
     restart: no
